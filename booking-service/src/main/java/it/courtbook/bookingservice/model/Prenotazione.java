@@ -34,4 +34,11 @@ public class Prenotazione {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatoPrenotazione stato = StatoPrenotazione.PENDING;
+
+    public Prenotazione(Long idUtente, Long idCampo, LocalDateTime inizio, LocalDateTime fine) {
+        this.idUtente = idUtente;
+        this.idCampo = idCampo;
+        this.inizio = inizio;
+        this.fine = fine;
+    }
 }
