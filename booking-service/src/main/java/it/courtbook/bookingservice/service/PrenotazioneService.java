@@ -2,6 +2,7 @@ package it.courtbook.bookingservice.service;
 
 import it.courtbook.bookingservice.dto.PrenotazioneRequest;
 import it.courtbook.bookingservice.dto.PrenotazioneResponse;
+import it.courtbook.bookingservice.event.PrenotazioneEventi;
 import it.courtbook.bookingservice.exception.PrenotazioneNonCancellabileException;
 import it.courtbook.bookingservice.exception.PrenotazioneNonCreabileException;
 import it.courtbook.bookingservice.exception.PrenotazioneNonTrovataException;
@@ -20,13 +21,14 @@ public class PrenotazioneService {
 
     private final PrenotazioneRepository prenotazioneRepository;
     private final PrenotazioneMapper prenotazioneMapper;
+    private final PrenotazioneEventi prenotazioneEventi;
 
     public PrenotazioneResponse crea(PrenotazioneRequest request) {
         if (!request.fine().isAfter(request.inizio())) { throw new PrenotazioneNonCreabileException("Data inizio deve essere precedente alla data fine"); }
 
         Prenotazione p = prenotazioneRepository.save(prenotazioneMapper.fromRequest(request));
 
-        //TODO: pubblica evento
+        prenotazioneEventi.pubblicaCreata(prenotazioneMapper.toEvent(p));
 
         return prenotazioneMapper.toResponse(p);
     }
@@ -49,7 +51,7 @@ public class PrenotazioneService {
 
         Prenotazione salvata = prenotazioneRepository.save(prenotazione);
 
-        // TODO: pubblica evento
+        prenotazioneEventi.pubblicaCancellata(prenotazioneMapper.toEvent(salvata));
 
         return prenotazioneMapper.toResponse(salvata);
     }
