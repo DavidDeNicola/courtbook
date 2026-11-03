@@ -12,6 +12,11 @@ import lombok.Setter;
 @Table(name = "campi")
 public class Campo {
 
+    public Campo(String nome, TipoCampo tipo) {
+        this.nome = nome;
+        this.tipo = tipo;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
