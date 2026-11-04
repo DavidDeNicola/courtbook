@@ -1,7 +1,6 @@
 package it.courtbook.bookingservice.dto;
 
 import it.courtbook.bookingservice.model.StatoPrenotazione;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 

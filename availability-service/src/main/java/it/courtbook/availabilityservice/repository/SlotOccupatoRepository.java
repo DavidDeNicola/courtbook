@@ -9,4 +9,8 @@ import java.util.List;
 public interface SlotOccupatoRepository extends JpaRepository<SlotOccupato, Long> {
 
     List<SlotOccupato> findByCampoIdAndInizioBetween(Long campoId, LocalDateTime da, LocalDateTime a);
+
+    boolean existsByCampoIdAndInizioLessThanAndFineGreaterThan(Long campoId, LocalDateTime fine, LocalDateTime inizio);
+
+    boolean existsByIdPrenotazione(Long idPrenotazione);
 }

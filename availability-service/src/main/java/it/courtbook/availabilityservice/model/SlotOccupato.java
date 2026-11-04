@@ -14,6 +14,13 @@ import java.time.LocalDateTime;
 @Table(name = "slot_occupati", uniqueConstraints = @UniqueConstraint(columnNames = {"campo_id", "inizio"}))
 public class SlotOccupato {
 
+    public SlotOccupato(Campo campo, Long idPrenotazione, LocalDateTime inizio, LocalDateTime fine) {
+        this.campo = campo;
+        this.idPrenotazione = idPrenotazione;
+        this.inizio = inizio;
+        this.fine = fine;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
