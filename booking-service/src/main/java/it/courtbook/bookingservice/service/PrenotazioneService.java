@@ -14,6 +14,7 @@ import it.courtbook.bookingservice.repository.PrenotazioneRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,7 @@ public class PrenotazioneService {
         return prenotazioneMapper.toResponse(salvata);
     }
 
+    @Transactional
     public void aggiornaStato(EsitoEvento evento) {
         Optional<Prenotazione> trovata = prenotazioneRepository.findById(evento.idPrenotazione());
 
