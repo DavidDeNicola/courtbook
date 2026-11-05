@@ -2,6 +2,7 @@ package it.courtbook.bookingservice.service;
 
 import it.courtbook.bookingservice.dto.PrenotazioneRequest;
 import it.courtbook.bookingservice.dto.PrenotazioneResponse;
+import it.courtbook.bookingservice.event.EsitoEvento;
 import it.courtbook.bookingservice.event.PrenotazioneEventi;
 import it.courtbook.bookingservice.exception.PrenotazioneNonCancellabileException;
 import it.courtbook.bookingservice.exception.PrenotazioneNonCreabileException;
@@ -11,10 +12,13 @@ import it.courtbook.bookingservice.model.Prenotazione;
 import it.courtbook.bookingservice.model.StatoPrenotazione;
 import it.courtbook.bookingservice.repository.PrenotazioneRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PrenotazioneService {
@@ -54,5 +58,30 @@ public class PrenotazioneService {
         prenotazioneEventi.pubblicaCancellata(prenotazioneMapper.toEvent(salvata));
 
         return prenotazioneMapper.toResponse(salvata);
+    }
+
+    public void aggiornaStato(EsitoEvento evento) {
+        Optional<Prenotazione> trovata = prenotazioneRepository.findById(evento.idPrenotazione());
+
+        if (trovata.isEmpty()) {
+            log.warn("Esito per prenotazione inesistente: {}", evento.idPrenotazione());
+            return;
+        }
+
+        Prenotazione prenotazione = trovata.get();
+
+        if(prenotazione.getStato() != StatoPrenotazione.PENDING) {
+            return;
+        }
+
+        StatoPrenotazione nuovoStato = switch (evento.esito()) {
+            case RIFIUTATA -> StatoPrenotazione.REJECTED;
+            case CONFERMATA ->  StatoPrenotazione.CONFIRMED;
+        };
+
+        prenotazione.setStato(nuovoStato);
+
+        prenotazioneRepository.save(prenotazione);
+
     }
 }
