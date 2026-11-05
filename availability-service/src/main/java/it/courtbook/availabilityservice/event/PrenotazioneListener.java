@@ -19,4 +19,10 @@ public class PrenotazioneListener {
         log.info("Ricevuta richiesta per la prenotazione: {}", evento.idPrenotazione());
         slotService.gestisciRichiesta(evento);
     }
+
+    @KafkaListener(topics = KafkaTopics.TOPIC_PRENOTAZIONE_CANCELLATA)
+    public void onPrenotazioneCancellata(PrenotazioneEvento evento) {
+        log.info("Ricevuta cancellazione per la prenotazione {}", evento.idPrenotazione());
+        slotService.liberaSlot(evento);
+    }
 }

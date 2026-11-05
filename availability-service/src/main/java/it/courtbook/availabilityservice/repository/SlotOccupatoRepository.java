@@ -13,4 +13,6 @@ public interface SlotOccupatoRepository extends JpaRepository<SlotOccupato, Long
     boolean existsByCampoIdAndInizioLessThanAndFineGreaterThan(Long campoId, LocalDateTime fine, LocalDateTime inizio);
 
     boolean existsByIdPrenotazione(Long idPrenotazione);
+
+    void deleteByIdPrenotazione(Long idPrenotazione);
 }

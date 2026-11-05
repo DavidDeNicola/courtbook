@@ -9,11 +9,13 @@ import it.courtbook.availabilityservice.model.Campo;
 import it.courtbook.availabilityservice.repository.CampoRepository;
 import it.courtbook.availabilityservice.repository.SlotOccupatoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SlotService {
@@ -43,6 +45,12 @@ public class SlotService {
 
         slotOccupatoRepository.save(slotOccupatoMapper.toSlotOccupato(evento, campo.get()));
         esitoEventi.inviaEsito(new EsitoEvento(evento.idPrenotazione(), evento.idUtente(), evento.idCampo(), Esito.CONFERMATA, "Prenotazione confermata"));
+    }
+
+    @Transactional
+    public void liberaSlot(PrenotazioneEvento evento) {
+        slotOccupatoRepository.deleteByIdPrenotazione(evento.idPrenotazione());
+        log.info("Slot liberato da prenotazione {}", evento.idPrenotazione());
     }
 
 
