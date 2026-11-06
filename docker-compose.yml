@@ -27,3 +27,59 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
     depends_on:
       - kafka
+
+  booking-db:
+    image: postgres:18-alpine
+    container_name: courtbook-booking-db
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: courtbook
+      POSTGRES_PASSWORD: courtbook
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U courtbook -d booking_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  availability-db:
+    image: postgres:18-alpine
+    container_name: courtbook-availability-db
+    environment:
+      POSTGRES_DB: availability_db
+      POSTGRES_USER: courtbook
+      POSTGRES_PASSWORD: courtbook
+    ports:
+      - "5434:5432"
+    volumes:
+      - availability-db-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U courtbook -d availability_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  notification-db:
+    image: postgres:18-alpine
+    container_name: courtbook-notification-db
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: courtbook
+      POSTGRES_PASSWORD: courtbook
+    ports:
+      - "5435:5432"
+    volumes:
+      - notification-db-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U courtbook -d notification_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  booking-db-data:
+  availability-db-data:
+  notification-db-data:
