@@ -1,5 +1,6 @@
 package it.courtbook.notificationservice.mapper;
 
+import it.courtbook.notificationservice.dto.NotificaResponse;
 import it.courtbook.notificationservice.event.EsitoEvento;
 import it.courtbook.notificationservice.event.PrenotazioneEvento;
 import it.courtbook.notificationservice.model.Notifica;
@@ -33,5 +34,15 @@ public class NotificaMapper {
         );
 
         return new Notifica(evento.idUtente(), evento.idPrenotazione(), TipoNotifica.CANCELLATA, contenuto);
+    }
+
+    public NotificaResponse toResponse(Notifica notifica) {
+        return new NotificaResponse(
+                notifica.getId(),
+                notifica.getIdPrenotazione(),
+                notifica.getTipo(),
+                notifica.getContenuto(),
+                notifica.getDataCreazione()
+        );
     }
 }

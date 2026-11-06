@@ -1,5 +1,6 @@
 package it.courtbook.notificationservice.service;
 
+import it.courtbook.notificationservice.dto.NotificaResponse;
 import it.courtbook.notificationservice.event.EsitoEvento;
 import it.courtbook.notificationservice.event.PrenotazioneEvento;
 import it.courtbook.notificationservice.mapper.NotificaMapper;
@@ -8,6 +9,8 @@ import it.courtbook.notificationservice.repository.NotificaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +35,9 @@ public class NotificaService {
         }
         notificaRepository.save(notifica);
         log.info("Salvata notifica {} per l'utente {}", notifica.getTipo(), notifica.getIdUtente());
+    }
+
+    public List<NotificaResponse> trovaPerUtente(Long idUtente) {
+        return notificaRepository.findByIdUtenteOrderByDataCreazioneDesc(idUtente).stream().map(notificaMapper::toResponse).toList();
     }
 }
