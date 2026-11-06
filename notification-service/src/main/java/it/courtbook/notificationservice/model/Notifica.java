@@ -17,6 +17,13 @@ import java.util.Map;
 @NoArgsConstructor
 public class Notifica {
 
+    public Notifica(Long idUtente, Long idPrenotazione, TipoNotifica tipo, Map<String, Object> contenuto) {
+        this.idUtente = idUtente;
+        this.idPrenotazione = idPrenotazione;
+        this.tipo = tipo;
+        this.contenuto = contenuto;
+    }
+
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
