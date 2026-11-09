@@ -79,6 +79,57 @@ services:
       timeout: 5s
       retries: 5
 
+  booking-service:
+    build: ./booking-service
+    image: courtbook-booking
+    container_name: courtbook-booking-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/booking_db
+      SPRING_DATASOURCE_USERNAME: courtbook
+      SPRING_DATASOURCE_PASSWORD: courtbook
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      booking-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+  availability-service:
+    build: ./availability-service
+    image: courtbook-availability
+    container_name: courtbook-availability-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://availability-db:5432/availability_db
+      SPRING_DATASOURCE_USERNAME: courtbook
+      SPRING_DATASOURCE_PASSWORD: courtbook
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      availability-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+  notification-service:
+    build: ./notification-service
+    image: courtbook-notification
+    container_name: courtbook-notification-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-db:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: courtbook
+      SPRING_DATASOURCE_PASSWORD: courtbook
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      notification-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
 volumes:
   booking-db-data:
   availability-db-data:
