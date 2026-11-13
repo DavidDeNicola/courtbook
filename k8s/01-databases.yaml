@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-db
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-db
+  template:
+    metadata:
+      labels:
+        app: booking-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: booking_db
+            - name: POSTGRES_USER
+              value: courtbook
+            - name: POSTGRES_PASSWORD
+              value: courtbook
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "courtbook", "-d", "booking_db"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-db
+  namespace: courtbook
+spec:
+  selector:
+    app: booking-db
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: availability-db
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: availability-db
+  template:
+    metadata:
+      labels:
+        app: availability-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: availability_db
+            - name: POSTGRES_USER
+              value: courtbook
+            - name: POSTGRES_PASSWORD
+              value: courtbook
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "courtbook", "-d", "availability_db"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: availability-db
+  namespace: courtbook
+spec:
+  selector:
+    app: availability-db
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-db
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-db
+  template:
+    metadata:
+      labels:
+        app: notification-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: notification_db
+            - name: POSTGRES_USER
+              value: courtbook
+            - name: POSTGRES_PASSWORD
+              value: courtbook
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "courtbook", "-d", "notification_db"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-db
+  namespace: courtbook
+spec:
+  selector:
+    app: notification-db
+  ports:
+    - port: 5432
+      targetPort: 5432

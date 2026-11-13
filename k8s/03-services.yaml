@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: booking-service
+          image: courtbook-booking:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://booking-db:5432/booking_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: courtbook
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: courtbook
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: courtbook
+spec:
+  selector:
+    app: booking-service
+  ports:
+    - port: 8081
+      targetPort: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: availability-service
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: availability-service
+  template:
+    metadata:
+      labels:
+        app: availability-service
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: availability-service
+          image: courtbook-availability:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://availability-db:5432/availability_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: courtbook
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: courtbook
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: availability-service
+  namespace: courtbook
+spec:
+  selector:
+    app: availability-service
+  ports:
+    - port: 8082
+      targetPort: 8082
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: courtbook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: notification-service
+          image: courtbook-notification:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://notification-db:5432/notification_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: courtbook
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: courtbook
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: courtbook
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - port: 8083
+      targetPort: 8083
